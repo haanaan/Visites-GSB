@@ -5,7 +5,7 @@ exports.createMotif = asyncHandler(async (req, res, next) => {
   const { libelle } = req.body;
 
   const motif = new Motif({
-    libelle : req.body.libelle
+    libelle,
   });
 
   await motif.save();

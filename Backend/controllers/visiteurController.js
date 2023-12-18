@@ -1,16 +1,21 @@
+const { body, validationResult } = require('express-validator');
 const Visiteur = require('../models/visiteur');
 const asyncHandler = require('express-async-handler');
 
 // Créer un visiteur
-exports.createVisiteur = asyncHandler(async (req, res, next) => {
-  const { nom, prenom, tel, email, date_embauche } = req.body;
+exports.createVisiteur = [
+  body('email').isEmail().withMessage('Veuillez entrer un mail valide').normalizeEmail(),
+  asyncHandler(async (req, res, next) => {
+  const { nom, prenom, tel, email, date_embauche, visites } = req.body;
 
+  const errors = validationResult(req);
   const visiteur = new Visiteur({
     nom,
     prenom,
     tel,
     email,
     date_embauche,
+    visites
   });
 
   await visiteur.save();
@@ -19,7 +24,7 @@ exports.createVisiteur = asyncHandler(async (req, res, next) => {
     message: 'Visiteur créé avec succès!',
     visiteur: visiteur
   });
-});
+})];
 
 // Obtenir un visiteur par ID
 exports.getOneVisiteur = asyncHandler(async (req, res, next) => {
